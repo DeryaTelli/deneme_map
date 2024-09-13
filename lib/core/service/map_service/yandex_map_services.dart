@@ -7,7 +7,7 @@ abstract class AppLocation {
 }
 
 class LocationService implements AppLocation {
-  final defLocation = const BishkekLocation();
+  final defLocation = const UzbekistanLocation();
   @override
   Future<AppLatLong> getCurrentLocation() async {
     return Geolocator.getCurrentPosition().then((value) {
@@ -32,7 +32,6 @@ class LocationService implements AppLocation {
             value == LocationPermission.whileInUse)
         .catchError((_) => false);
   }
-  
 }
 
 class AppLatLong {
@@ -46,9 +45,9 @@ class AppLatLong {
 }
 
 //istenilen location bilgisi olarak guncelle
-class BishkekLocation extends AppLatLong {
-  const BishkekLocation({
-    super.lat = 42.882004,
-    super.long = 74.582748,
+class UzbekistanLocation extends AppLatLong {
+  const UzbekistanLocation({
+    super.lat = 41.3775,  // Özbekistan’ın merkezi - Taşkent
+    super.long = 64.5853, // Özbekistan’ın merkezi - Taşkent
   });
 }
