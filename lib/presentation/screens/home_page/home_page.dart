@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:deneme_map/core/service/map_service/yandex_map_services.dart';
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -90,7 +89,6 @@ class _HomePageState extends State<HomePage> {
             rotationType: RotationType.rotate),
       ),
     );
-
     mapObject.add(myLocationMarker);
   }
 }

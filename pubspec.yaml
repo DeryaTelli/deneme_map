@@ -38,6 +38,7 @@ dependencies:
   dio: ^5.7.0
   yandex_mapkit: ^4.1.0
   geolocator: ^13.0.1
+  polygon: ^0.1.0
 
 dev_dependencies:
   flutter_test:
