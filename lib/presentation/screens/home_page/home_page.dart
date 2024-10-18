@@ -18,12 +18,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<MapObject> mapObject = [];
-  AppLatLong? currentLocation;
+  AppLatLong currentLocation = UzbekistanLocation();
 
   final mapControllerCompleter = Completer<YandexMapController>();
   @override
   Widget build(BuildContext context) {
-    addObject(appLatLong: currentLocation ?? const UzbekistanLocation());
+    addObject(appLatLong: currentLocation);
     return Scaffold(
         body: Stack(
       children: [
@@ -37,6 +37,10 @@ class _HomePageState extends State<HomePage> {
             mapControllerCompleter.complete(controller);
           },
         ),
+        // Positioned(
+        //   left: MediaQuery.of(context).size.width / 2,
+        //    top: MediaQuery.of(context).size.height / 2,
+        //  child: Image.asset("assets/images/mark.png")),
       ],
     ));
   }
@@ -54,16 +58,19 @@ class _HomePageState extends State<HomePage> {
     const defLocation = UzbekistanLocation();
     try {
       location = await LocationService().getCurrentLocation();
+      print(location.lat);
+      print(location.long);
     } catch (_) {
       location = defLocation;
     }
-    currentLocation = location;
+
     _moveToCurrentLocation(location);
   }
 
   Future<void> _moveToCurrentLocation(
     AppLatLong appLatLong,
   ) async {
+    currentLocation = appLatLong;
     (await mapControllerCompleter.future).moveCamera(
         animation:
             const MapAnimation(type: MapAnimationType.smooth, duration: 5),
@@ -80,15 +87,19 @@ class _HomePageState extends State<HomePage> {
 
   void addObject({required AppLatLong appLatLong}) {
     final myLocationMarker = PlacemarkMapObject(
+      opacity: 1,
       mapId: MapObjectId('currentLocation'),
       point: Point(latitude: appLatLong.lat, longitude: appLatLong.long),
       icon: PlacemarkIcon.single(
         PlacemarkIconStyle(
-            image: BitmapDescriptor.fromAssetImage('assets/images/mark.jpg'),
-            scale: 0.5,
-            rotationType: RotationType.rotate),
+            image: BitmapDescriptor.fromAssetImage('assets/images/mark.png'),
+            scale: 0.1,
+            rotationType: RotationType.noRotation),
       ),
     );
+    print(appLatLong.lat);
+    print(appLatLong.long);
     mapObject.add(myLocationMarker);
+    print(mapObject);
   }
 }

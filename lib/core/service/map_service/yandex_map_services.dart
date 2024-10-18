@@ -47,7 +47,7 @@ class AppLatLong {
 //istenilen location bilgisi olarak guncelle
 class UzbekistanLocation extends AppLatLong {
   const UzbekistanLocation({
-    super.lat = 41.3775,  // Özbekistan’ın merkezi - Taşkent
-    super.long = 64.5853, // Özbekistan’ın merkezi - Taşkent
+    super.lat = 37.4219985, //41.3775,  // Özbekistan’ın merkezi - Taşkent
+    super.long = -122.0839999, //64.5853, // Özbekistan’ın merkezi - Taşkent
   });
 }
