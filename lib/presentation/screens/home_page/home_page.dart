@@ -10,29 +10,34 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
     _initPermission().ignore();
   }
 
   List<MapObject> mapObject = [];
-  AppLatLong currentLocation = UzbekistanLocation();
+  //AppLatLong? currentLocation;
+  AnimationController? _animationController;
+  Animation<double>? _animation;
+  double opacity = 0;
 
   final mapControllerCompleter = Completer<YandexMapController>();
   @override
   Widget build(BuildContext context) {
-    addObject(appLatLong: currentLocation);
+    // addObject(appLatLong: currentLocation ?? const UzbekistanLocation());
     return Scaffold(
         body: Stack(
       children: [
         YandexMap(
           mapObjects: mapObject,
           onMapTap: (point) {
-            print(point.latitude);
-            print(point.longitude);
+            addMark(point: point);
           },
+          nightModeEnabled: true,
           onMapCreated: (controller) {
             mapControllerCompleter.complete(controller);
           },
@@ -58,19 +63,18 @@ class _HomePageState extends State<HomePage> {
     const defLocation = UzbekistanLocation();
     try {
       location = await LocationService().getCurrentLocation();
-      print(location.lat);
-      print(location.long);
     } catch (_) {
       location = defLocation;
     }
 
+    addObject(appLatLong: location);
     _moveToCurrentLocation(location);
   }
 
   Future<void> _moveToCurrentLocation(
     AppLatLong appLatLong,
   ) async {
-    currentLocation = appLatLong;
+    //currentLocation = appLatLong;
     (await mapControllerCompleter.future).moveCamera(
         animation:
             const MapAnimation(type: MapAnimationType.smooth, duration: 5),
@@ -97,9 +101,32 @@ class _HomePageState extends State<HomePage> {
             rotationType: RotationType.noRotation),
       ),
     );
-    print(appLatLong.lat);
-    print(appLatLong.long);
-    mapObject.add(myLocationMarker);
-    print(mapObject);
+    final currentLocationCircle = CircleMapObject(
+        mapId: MapObjectId('currentLocationCircle'),
+        circle: Circle(
+          center: Point(latitude: appLatLong.lat, longitude: appLatLong.long),
+          radius: 250,
+        ),
+        strokeWidth: 0,
+        fillColor: const Color.fromARGB(255, 8, 10, 142).withOpacity(0.1));
+
+    mapObject.addAll([currentLocationCircle, myLocationMarker]);
+    setState(() {});
+  }
+
+  void addMark({required Point point}) {
+    final secondLocation = PlacemarkMapObject(
+      opacity: 1,
+      mapId: MapObjectId('secondLocation'),
+      point: point,
+      icon: PlacemarkIcon.single(
+        PlacemarkIconStyle(
+            image: BitmapDescriptor.fromAssetImage('assets/images/mark.png'),
+            scale: 0.1,
+            rotationType: RotationType.noRotation),
+      ),
+    );
+    mapObject.add(secondLocation);
+    setState(() {});
   }
 }
